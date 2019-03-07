@@ -29,10 +29,12 @@ struct birthday *birthday_create(int day, int month, int year)
   return temp;
 }
 
-void init_birthday_list(struct birthday *p) 
+struct birthday *init_birthday_list(void) 
 {
-  p = birthday_create(13, 7, 1993);
-  INIT_LIST_HEAD(&p->list);
+  struct birthday *temp;
+  temp = birthday_create(13, 7, 1993);
+  INIT_LIST_HEAD(&temp->list);
+  return temp;
 }
 
 
@@ -63,11 +65,11 @@ void destroy_birthday_items(struct birthday *p)
 }
 
 /* This function is called when the module is loaded. */
-int simple_init(void)
+int birthday_list_init(void)
 {
   printk(KERN_INFO "Loading Module\n");
 
-  init_birthday_list(person);
+  person = init_birthday_list();
   add_birthday_items(person);
   print_items(person);
 
@@ -75,15 +77,15 @@ int simple_init(void)
 }
 
 /* This function is called when the module is removed. */
-void simple_exit(void)
+void birthday_list_exit(void)
 {
   printk(KERN_INFO "Removing module\n");
   destroy_birthday_items(person);
 }
 
 /* Macros for registering module entry and exit point. */
-module_init(simple_init);
-module_exit(simple_exit);
+module_init(birthday_list_init);
+module_exit(birthday_list_exit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Birthday Module");
